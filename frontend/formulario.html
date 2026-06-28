@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Solicitud - Ctrl + Mat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen text-slate-100 p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-slate-800/40 backdrop-blur-xl border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden">
+        
+        <div class="border-b border-slate-700/60 bg-slate-800/80 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">UNSIS - Vale Digital</span>
+                <h1 class="text-2xl font-extrabold text-white flex items-center gap-2 mt-1">
+                    <i class="fa-solid fa-file-invoice text-blue-500"></i> Solicitud de Materiales y Equipos
+                </h1>
+            </div>
+            <div class="text-sm bg-slate-900/60 px-4 py-2 rounded-xl border border-slate-700/50">
+                <span class="text-slate-400">Ubicación seleccionada:</span>
+                <span id="label-laboratorio" class="font-bold text-blue-400 ml-1">Cargando...</span>
+            </div>
+        </div>
+
+        <form class="p-6 md:p-8 space-y-8">
+            <div class="space-y-3">
+                <label class="block text-sm font-semibold text-slate-300">
+                    <i class="fa-solid fa-layer-group text-slate-400 mr-2"></i>Categorías requeridas:
+                </label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    <label class="flex items-center gap-3 bg-slate-900/50 border border-slate-700/60 p-3.5 rounded-xl cursor-pointer hover:bg-slate-700/30 transition-all select-none">
+                        <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-slate-300">Electrónicos</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-900/50 border border-slate-700/60 p-3.5 rounded-xl cursor-pointer hover:bg-slate-700/30 transition-all select-none">
+                        <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-slate-300">Hardware</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-900/50 border border-slate-700/60 p-3.5 rounded-xl cursor-pointer hover:bg-slate-700/30 transition-all select-none">
+                        <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-slate-300">Software</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-900/50 border border-slate-700/60 p-3.5 rounded-xl cursor-pointer hover:bg-slate-700/30 transition-all select-none">
+                        <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-slate-300">Manuales</span>
+                    </label>
+                    <label class="flex items-center gap-3 bg-slate-900/50 border border-slate-700/60 p-3.5 rounded-xl cursor-pointer hover:bg-slate-700/30 transition-all select-none">
+                        <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-slate-300">Herramientas</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-300">Fecha de Solicitud</label>
+                    <input type="date" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-300">Fecha Estimada de Entrega</label>
+                    <div class="flex items-center gap-4">
+                        <input type="date" class="flex-1 bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                        <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-400 hover:text-slate-200">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                            <span>No definido</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 space-y-2">
+                    <label class="block text-sm font-semibold text-slate-300">Nombre Completo del Solicitante</label>
+                    <input type="text" placeholder="Ej. Brisa Martínez" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-300">Grupo / Matrícula</label>
+                    <input type="text" placeholder="Ej. 604-B" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                </div>
+            </div>
+
+            <div class="space-y-2 relative">
+                <label for="buscar" class="block text-sm font-semibold text-slate-300">
+                    <i class="fa-solid fa-magnifying-glass text-blue-500 mr-2"></i>Buscador de Artículos (API Autocomplete)
+                </label>
+                <div class="flex gap-2">
+                    <input type="text" id="buscar" placeholder="Escribe el nombre o código del artículo..." 
+                        class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    <button type="button" class="bg-slate-700 hover:bg-slate-600 border border-slate-600 px-5 rounded-xl font-medium transition-all">Buscar</button>
+                </div>
+
+                <div class="absolute z-20 w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-h-60 overflow-y-auto hidden">
+                    <div class="px-4 py-2.5 hover:bg-slate-700/50 cursor-pointer flex justify-between items-center border-b border-slate-700/40">
+                        <span>Cable HDMI 5 metros</span>
+                        <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">Disponible: 12</span>
+                    </div>
+                    <div class="px-4 py-2.5 hover:bg-slate-700/50 cursor-pointer flex justify-between items-center">
+                        <span>Multímetro Digital Steren</span>
+                        <span class="text-xs bg-rose-500/20 text-rose-400 px-2 py-0.5 rounded-full font-bold">En uso</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900/20">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                                <th class="p-4 w-16 text-center">No.</th>
+                                <th class="p-4">Descripción del Artículo</th>
+                                <th class="p-4 w-24">Cantidad</th>
+                                <th class="p-4 w-40">Código</th>
+                                <th class="p-4">Observaciones / Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/60 text-sm">
+                            <tr class="hover:bg-slate-800/30 transition-all">
+                                <td class="p-4 text-center font-medium text-slate-400">1</td>
+                                <td class="p-4">
+                                    <input type="text" placeholder="Nombre del artículo" class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                </td>
+                                <td class="p-4">
+                                    <input type="number" min="1" value="1" class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 text-center focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                </td>
+                                <td class="p-4">
+                                    <input type="text" placeholder="UNSIS-CETI-00" class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 font-mono text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                </td>
+                                <td class="p-4">
+                                    <input type="text" placeholder="Ninguna" class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-slate-700/60">
+                <button type="button" class="w-full sm:w-auto text-sm font-semibold bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl px-5 py-3 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus text-xs text-blue-400"></i> Agregar Fila
+                </button>
+                <div class="flex w-full sm:w-auto gap-3">
+                    <a href="index.html" class="flex-1 sm:flex-initial text-center text-sm font-semibold bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl px-6 py-3 transition-all">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="flex-1 sm:flex-initial text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-8 py-3 shadow-lg shadow-blue-600/20 transition-all">
+                        Guardar Solicitud
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const laboratorio = urlParams.get('laboratorio') || 'No seleccionado';
+        document.getElementById('label-laboratorio').textContent = laboratorio;
+    </script>
+</body>
+</html>
