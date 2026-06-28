@@ -15,7 +15,7 @@ app.post('/api/login', async (req, res) => {
         const [rows] = await db.execute('SELECT * FROM usuarios WHERE matricula = ?', [usuario]);
 
         if (rows.length === 0) {
-            return res.statusGroup(401).json({ error: "La matrícula o usuario no existen." });
+            return res.status(401).json({ error: "La matrícula o usuario no existen." });
         }
 
         const usuarioEncontrado = rows[0];
@@ -39,8 +39,43 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.post('/api/materiales', async (req, res) => {
+    const { codigo, descripcion, categoria, stock_total } = req.body;
+
+    // Validación básica de campos vacíos
+    if (!codigo || !descripcion || !categoria || !stock_total) {
+        return res.status(400).json({ error: "Todos los campos son obligatorios." });
+    }
+
+    try {
+        // Al registrar, el stock_disponible es igual al stock_total inicialmente
+        const query = 'INSERT INTO materiales (codigo, descripcion, categoria, stock_total, stock_disponible) VALUES (?, ?, ?, ?, ?)';
+        await db.execute(query, [codigo, descripcion, categoria, stock_total, stock_total]);
+        
+        res.status(201).json({ mensaje: "Material registrado exitosamente." });
+    } catch (error) {
+        console.error("Error al insertar material:", error);
+        // Manejar por si intentan meter un código duplicado
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: "El código de material ya existe." });
+        }
+        res.status(500).json({ error: "Error interno al registrar el material." });
+    }
+});
+
 app.get('/api/prueba', (req, res) => {
     res.json({ mensaje: "¡El backend de Ctrl + Mat está vivo y escuchando!" });
+});
+
+app.get('/api/materiales', async (req, res) => {
+    try {
+        // Consultamos todos los materiales de la base de datos
+        const [rows] = await db.execute('SELECT * FROM materiales');
+        res.json(rows);
+    } catch (error) {
+        console.error("Error al obtener materiales:", error);
+        res.status(500).json({ error: "Error al obtener el inventario." });
+    }
 });
 
 const PORT = process.env.PORT || 5000;
