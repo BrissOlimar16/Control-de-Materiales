@@ -19,7 +19,7 @@
     <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 w-full max-w-md rounded-2xl p-8 shadow-2xl text-center relative z-10">
         <div class="flex flex-col items-center mb-6">
             <div class="w-20 h-20 bg-slate-700/50 rounded-full flex items-center justify-center mb-4 border border-slate-600/50 p-2">
-                <img src="imagenes/escudo-unsis.png" alt="UNSIS" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML='<i class=\"fa-solid fa-graduation-cap text-3xl text-amber-500\"></i>'">
+                <img src="imagenes/escudo-unsis.png" alt="UNSIS" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML=`<i class='fa-solid fa-graduation-cap text-3xl text-amber-500'></i>`">
             </div>
             <h1 class="text-xs font-bold text-amber-500 uppercase tracking-widest">Universidad de la Sierra Sur</h1>
             <h2 class="text-3xl font-extrabold text-white mt-1">Ctrl <span class="text-blue-500">+</span> Mat</h2>
@@ -29,13 +29,13 @@
         <form action="formulario.html" method="GET" class="space-y-6 text-left">
             <div>
                 <label for="laboratorio" class="block text-sm font-semibold text-slate-300 mb-2">
-                    <i class="fa-solid fa-flask text-blue-500 mr-2"></i>Seleccione el Laboratorio / Centro
+                    <i class="fa-solid fa-flask text-blue-500 mr-2"></i>Seleccione el Laboratorio a solicitar materiales
                 </label>
                 <div class="relative">
                     <select name="laboratorio" id="laboratorio" required
                         class="w-full bg-slate-900/80 border border-slate-700 text-slate-200 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 appearance-none cursor-pointer transition-all">
                         <option value="" disabled selected class="text-slate-500">Seleccione una opción...</option>
-                        <option value="CETI" class="bg-slate-900">CETI (Centro de Cómputo)</option>
+                        <option value="CETI" class="bg-slate-900">CETI (Informática)</option>
                         <option value="CEODON" class="bg-slate-900">CEODON (Odontología)</option>
                         <option value="CPAT" class="bg-slate-900">CPAT (Medicina)</option>
                         <option value="CINA" class="bg-slate-900">CINA (Nutrición)</option>
