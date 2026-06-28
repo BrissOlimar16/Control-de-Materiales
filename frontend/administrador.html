@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Ctrl + Mat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
+</head>
+<body class="bg-slate-900 min-h-screen text-slate-100 flex flex-col md:flex-row">
+
+    <!-- Barra Lateral (Sidebar) -->
+    <div class="w-full md:w-64 bg-slate-800/60 backdrop-blur-xl border-r border-slate-700/60 p-6 flex flex-col justify-between gap-6">
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 border-b border-slate-700/60 pb-4">
+                <i class="fa-solid fa-screwdriver-wrench text-2xl text-blue-500"></i>
+                <div>
+                    <h2 class="font-extrabold text-white text-lg leading-tight">Ctrl + Mat</h2>
+                    <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Modo Administrador</span>
+                </div>
+            </div>
+            <nav class="space-y-2">
+                <a href="#solicitudes" class="flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-blue-600/10">
+                    <i class="fa-solid fa-clock-rotate-left w-5"></i> Solicitudes Pendientes
+                </a>
+                <a href="#inventario" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-boxes-stacked w-5"></i> Stock / Inventario
+                </a>
+                <a href="#historial" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-list-check w-5"></i> Historial General
+                </a>
+            </nav>
+        </div>
+        <a href="login.html" class="flex items-center gap-3 text-rose-400 hover:bg-rose-500/10 px-4 py-3 rounded-xl font-medium text-sm transition-all border border-transparent hover:border-rose-500/20">
+            <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        </a>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+        <!-- Banner superior -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-800/40 border border-slate-700/50 p-6 rounded-2xl">
+            <div>
+                <h1 class="text-2xl font-extrabold text-white">Panel de Control General</h1>
+                <p class="text-xs text-slate-400 mt-1">Monitoreo de inventarios, alertas y aprobación de solicitudes para la UNSIS.</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="bg-blue-600 hover:bg-blue-500 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-600/20">
+                    <i class="fa-solid fa-plus mr-2"></i>Nuevo Material
+                </button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 1: SOLICITUDES PENDIENTES (ALERTAS) -->
+        <section id="solicitudes" class="space-y-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Solicitar por Autorizar / Entregar
+            </h2>
+            <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-800/20">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-4">Solicitante</th>
+                            <th class="p-4">Laboratorio</th>
+                            <th class="p-4">Artículo Requerido</th>
+                            <th class="p-4">Fecha Solicitud</th>
+                            <th class="p-4 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/40">
+                        <tr class="hover:bg-slate-800/30 transition-all">
+                            <td class="p-4 font-semibold text-white">Brisa </td>
+                            <td class="p-4 text-blue-400">CETI</td>
+                            <td class="p-4 text-slate-300">1x Multímetro Digital Steren</td>
+                            <td class="p-4 text-slate-400">2026-06-28</td>
+                            <td class="p-4 flex justify-center gap-2">
+                                <button class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all">Aprobar</button>
+                                <button class="bg-rose-600/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-all">Rechazar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: INVENTARIO / STOCK -->
+        <section id="inventario" class="space-y-4 pt-4">
+            <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-box-open text-blue-500 mr-2"></i>Monitoreo de Stock Actual</h2>
+            <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-800/20">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-4">Código</th>
+                            <th class="p-4">Descripción</th>
+                            <th class="p-4">Categoría</th>
+                            <th class="p-4 text-center">Stock Total</th>
+                            <th class="p-4 text-center">Disponible</th>
+                            <th class="p-4 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/40">
+                        <tr class="hover:bg-slate-800/30 transition-all">
+                            <td class="p-4 font-mono text-xs text-slate-400">CETI-001</td>
+                            <td class="p-4 text-slate-200 font-medium">Cable HDMI 5 metros</td>
+                            <td class="p-4 text-slate-400">Herramientas</td>
+                            <td class="p-4 text-center text-slate-300">15</td>
+                            <td class="p-4 text-center"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold text-xs">15</span></td>
+                            <td class="p-4 text-center">
+                                <button class="text-blue-400 hover:text-blue-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

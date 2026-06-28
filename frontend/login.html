@@ -30,25 +30,21 @@
             <p class="text-xs text-slate-400 mt-1">Inicia sesión para solicitar materiales para tus prácticas académicas</p>
         </div>
 
-        <!-- Formulario de Login -->
-        <!-- NOTA: temporalmente apunta a 'index.html' para simular el acceso exitoso -->
-        <form action="index.html" method="GET" class="space-y-5">
+        <form id="formLogin" class="space-y-5">
             
-            <!-- Entrada: Matrícula / Usuario -->
             <div class="space-y-2">
                 <label for="usuario" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                    Usuario
+                    Matrícula
                 </label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
                         <i class="fa-solid fa-user text-sm"></i>
                     </div>
-                    <input type="text" id="usuario" name="usuario" required placeholder="Ej. 2023010023"
+                    <input type="text" id="usuario" name="usuario" required placeholder="Ej. 20260001"
                         class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                 </div>
             </div>
 
-            <!-- Entrada: Contraseña -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center">
                     <label for="password" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
@@ -65,15 +61,6 @@
                 </div>
             </div>
 
-            <!-- Recordar sesión -->
-            <div class="flex items-center">
-                <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-400 hover:text-slate-200 select-none">
-                    <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-950 border-slate-700 focus:ring-blue-500">
-                    <span>Mantener sesión activa</span>
-                </label>
-            </div>
-
-            <!-- Botón Ingresar -->
             <button type="submit" 
                 class="w-full text-white bg-blue-600 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-800/50 font-semibold rounded-xl text-sm px-5 py-3.5 text-center transition-all shadow-lg shadow-blue-600/20">
                 Ingresar al Sistema
@@ -85,5 +72,30 @@
             <p class="text-xs text-slate-500">¿No tienes cuenta? <a href="#" class="text-blue-400 font-medium hover:underline">Solicita acceso al encargado</a></p>
         </div>
     </div>
+
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página se recargue automáticamente
+
+            const matricula = document.getElementById('usuario').value.trim();
+            const contrasena = document.getElementById('password').value;
+
+            // SIMULACIÓN TEMPORAL DE ROLES (Esto después lo consultaremos a la base de datos)
+            if (matricula === '20260001' && contrasena === '123456') {
+                // Caso: Administrador (Brisa) -> Al panel de control
+                alert("¡Bienvenida Administradora!");
+                window.location.href = "administrador.html";
+            } 
+            else if (matricula === '20260002' && contrasena === 'alumno123') {
+                // Caso: Alumno -> A seleccionar laboratorio para su vale
+                alert("Inicio de sesión exitoso como Alumno");
+                window.location.href = "index.html";
+            } 
+            else {
+                // Caso: Datos incorrectos
+                alert("Matrícula o contraseña incorrectos. Intenta con 20260001 (Admin) o 20260002 (Alumno).");
+            }
+        });
+    </script>
 </body>
 </html>

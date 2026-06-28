@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Historial de Préstamos - Ctrl + Mat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
+</head>
+<body class="bg-slate-900 min-h-screen text-slate-100 p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-slate-800/40 backdrop-blur-xl border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden">
+        
+        <!-- Navbar Superior del Alumno -->
+        <div class="border-b border-slate-700/60 bg-slate-800/80 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-blue-600/10 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-500">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">Portal del Estudiante</span>
+                    <h1 class="text-xl font-extrabold text-white mt-0.5">Mis Préstamos de Material</h1>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="index.html" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-[10px]"></i> Nueva Solicitud
+                </a>
+                <a href="login.html" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 font-semibold text-xs px-4 py-2.5 rounded-xl transition-all">
+                    Salir
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="p-6 md:p-8 space-y-6">
+            <div class="bg-slate-900/40 border border-slate-700/50 p-4 rounded-xl flex items-center gap-3 text-sm text-slate-300">
+                <i class="fa-solid fa-circle-info text-amber-500 text-lg"></i>
+                <span>Recuerda que debes devolver tus materiales a tiempo en el laboratorio correspondiente para evitar sanciones en tu historial académico.</span>
+            </div>
+
+            <!-- Tabla de Historial Personal -->
+            <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900/20">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-4">Material / Artículo</th>
+                            <th class="p-4">Laboratorio</th>
+                            <th class="p-4">Fecha Préstamo</th>
+                            <th class="p-4">Fecha Entrega</th>
+                            <th class="p-4 text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/60">
+                        <!-- Caso Activo / En posesión -->
+                        <tr class="hover:bg-slate-800/30 transition-all">
+                            <td class="p-4 font-semibold text-white">1x Multímetro Digital Steren</td>
+                            <td class="p-4 text-slate-400">CETI</td>
+                            <td class="p-4 text-slate-400">2026-06-25</td>
+                            <td class="p-4 text-slate-400">2026-06-30</td>
+                            <td class="p-4 text-center">
+                                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full text-xs font-bold">Pendiente</span>
+                            </td>
+                        </tr>
+                        <!-- Caso Ya devuelto -->
+                        <tr class="hover:bg-slate-800/30 transition-all">
+                            <td class="p-4 font-semibold text-slate-400">2x Cable HDMI 5 metros</td>
+                            <td class="p-4 text-slate-400">CETI</td>
+                            <td class="p-4 text-slate-400">2026-05-12</td>
+                            <td class="p-4 text-slate-400">2026-05-12</td>
+                            <td class="p-4 text-center">
+                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full text-xs font-bold">Devuelto</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
