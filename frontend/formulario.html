@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <form class="p-6 md:p-8 space-y-8">
+        <form id="formSolicitud" class="p-6 md:p-8 space-y-8">
             <div class="space-y-3">
                 <label class="block text-sm font-semibold text-slate-300">
                     <i class="fa-solid fa-layer-group text-slate-400 mr-2"></i>Categorías requeridas:
@@ -60,14 +60,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-slate-300">Fecha de Solicitud</label>
-                    <input type="date" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    <input id="fechaSolicitud" type="date" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-slate-300">Fecha Estimada de Entrega</label>
                     <div class="flex items-center gap-4">
-                        <input type="date" class="flex-1 bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                        <input id="fechaEntrega" type="date" class="flex-1 bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                         <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-400 hover:text-slate-200">
-                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                            <input id="checkNoDefinido" type="checkbox" class="w-4 h-4 rounded text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-500">
                             <span>No definido</span>
                         </label>
                     </div>
@@ -77,7 +77,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="md:col-span-2 space-y-2">
                     <label class="block text-sm font-semibold text-slate-300">Nombre Completo del Solicitante</label>
-                    <input type="text" placeholder="Ej. Brisa Martínez" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    <input id="nombreAlumno" type="text" placeholder="Ej. Brisa Martínez" class="w-full bg-slate-900/60 border border-slate-700 text-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-slate-300">Grupo</label>
@@ -157,9 +157,182 @@
     </div>
 
     <script>
+        // 1. Obtener los parámetros de la URL para el laboratorio
         const urlParams = new URLSearchParams(window.location.search);
         const laboratorio = urlParams.get('laboratorio') || 'No seleccionado';
         document.getElementById('label-laboratorio').textContent = laboratorio;
+
+        // Elementos de la interfaz para el buscador dinámico
+        const inputBuscar = document.getElementById('buscar');
+        const btnBuscar = inputBuscar.nextElementSibling; // El botón "Buscar" que está al lado
+        const contenedorLista = inputBuscar.parentElement.nextElementSibling; // El div flotante de sugerencias
+
+        let todosLosMateriales = []; // Aquí guardaremos lo que traigamos de la base de datos
+
+        // 2. Obtener los materiales desde el Backend al cargar la página
+        async function obtenerMaterialesBackend() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/materiales');
+                todosLosMateriales = await respuesta.json();
+            } catch (error) {
+                console.error("Error al conectar con la API de materiales:", error);
+            }
+        }
+
+        // 3. Filtrar y mostrar las sugerencias según lo que escriba el alumno
+        function mostrarSugerencias() {
+            const texto = inputBuscar.value.trim().toLowerCase();
+            contenedorLista.innerHTML = ''; // Limpiamos la lista vieja
+
+            if (texto === '') {
+                contenedorLista.classList.add('hidden');
+                return;
+            }
+
+            // Filtramos los materiales por descripción o código
+            const filtrados = todosLosMateriales.filter(m => 
+                m.descripcion.toLowerCase().includes(texto) || 
+                m.codigo.toLowerCase().includes(texto)
+            );
+
+            if (filtrados.length === 0) {
+                contenedorLista.innerHTML = `<div class="px-4 py-2.5 text-slate-500 text-sm">No se encontraron coincidencias</div>`;
+                contenedorLista.classList.remove('hidden');
+                return;
+            }
+
+            // Agregamos los materiales que coincidieron a la lista desplegable
+            filtrados.forEach(material => {
+                const item = document.createElement('div');
+                item.className = "px-4 py-2.5 hover:bg-slate-700/50 cursor-pointer flex justify-between items-center border-b border-slate-700/40 text-sm transition-all";
+                
+                // Badge dinámico según la disponibilidad real de la base de datos
+                const badgeColor = material.stock_disponible > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400';
+                const badgeTexto = material.stock_disponible > 0 ? `Disponible: ${material.stock_disponible}` : 'Agotado';
+
+                item.innerHTML = `
+                    <span>${material.descripcion}</span>
+                    <span class="text-xs ${badgeColor} px-2 py-0.5 rounded-full font-bold">${badgeTexto}</span>
+                `;
+
+                // Al hacer clic en un artículo sugerido, lo mandamos a la tabla
+                item.addEventListener('click', () => {
+                    if (material.stock_disponible <= 0) {
+                        alert("Este material está agotado actualmente.");
+                        return;
+                    }
+                    rellenarFilaActual(material);
+                    contenedorLista.classList.add('hidden');
+                    inputBuscar.value = ''; // Limpiamos el buscador
+                });
+
+                contenedorLista.appendChild(item);
+            });
+
+            contenedorLista.classList.remove('hidden');
+        }
+
+        // 4. Rellenar de manera automática los inputs de la tabla al seleccionar un artículo
+        function rellenarFilaActual(material) {
+            const tbody = document.querySelector('table tbody');
+            const ultimaFila = tbody.lastElementChild;
+
+            // Obtenemos los campos de texto dentro de esa fila
+            const inputDesc = ultimaFila.cells[1].querySelector('input');
+            const inputCant = ultimaFila.cells[2].querySelector('input');
+            const inputCodigo = ultimaFila.cells[3].querySelector('input');
+
+            // Inyectamos los valores reales de la base de datos
+            inputDesc.value = material.descripcion;
+            inputCodigo.value = material.codigo;
+            inputCant.max = material.stock_disponible; // No permite pedir más del stock existente
+            inputCant.value = 1;
+        }
+
+        // Escuchadores de eventos para el buscador
+        inputBuscar.addEventListener('input', mostrarSugerencias);
+
+        // Ocultar la lista si el alumno hace clic en cualquier otra parte de la pantalla
+        document.addEventListener('click', (e) => {
+            if (!inputBuscar.contains(e.target) && !contenedorLista.contains(e.target)) {
+                contenedorLista.classList.add('hidden');
+            }
+        });
+
+        // Inicializar carga de datos
+        document.addEventListener('DOMContentLoaded', obtenerMaterialesBackend);
+
+        // --- FUNCIÓN: ENVIAR EL VALE AL BACKEND ---
+        const formSolicitud = document.getElementById('formSolicitud');
+
+        formSolicitud.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita que la página se recargue sola
+
+            // 1. Recuperamos los datos del alumno desde la sesión del localStorage
+            const infoSesion = localStorage.getItem('usuario');
+            if (!infoSesion) {
+                alert("Sesión expirada. Por favor, vuelve a iniciar sesión.");
+                window.location.href = "login.html";
+                return;
+            }
+            const usuario_id = JSON.parse(infoSesion).matricula;
+
+            // 2. Recolectamos los datos de los inputs generales
+            const fecha_solicitud = document.getElementById('fechaSolicitud').value;
+            const checkNoDefinido = document.getElementById('checkNoDefinido').checked;
+            const fecha_entrega = checkNoDefinido ? null : document.getElementById('fechaEntrega').value;
+
+            // 3. Recorremos las filas de la tabla para armar el arreglo de materiales a pedir
+            const materialesAEnviar = [];
+            const filas = document.querySelectorAll('table tbody tr');
+
+            filas.forEach(fila => {
+                const codigo = fila.cells[3].querySelector('input').value.trim();
+                const cantidad = parseInt(fila.cells[2].querySelector('input').value);
+                const descripcion = fila.cells[1].querySelector('input').value.trim();
+
+                // Solo agregamos si la fila tiene un código válido inyectado por el buscador
+                if (codigo && cantidad > 0) {
+                    materialesAEnviar.push({ codigo, cantidad, descripcion });
+                }
+            });
+
+            if (materialesAEnviar.length === 0) {
+                alert("Debes agregar al menos un material válido usando el buscador.");
+                return;
+            }
+
+            // 4. Estructuramos el JSON final para mandarlo a la API
+            const datosVale = {
+                usuario_id,
+                laboratorio, // Variable global que ya extrae el nombre del laboratorio de la URL
+                fecha_solicitud,
+                fecha_entrega,
+                materiales: materialesAEnviar
+            };
+
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datosVale)
+                });
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    alert(resultado.error || "Hubo un problema al guardar la solicitud.");
+                    return;
+                }
+
+                alert("¡Solicitud enviada con éxito al encargado!");
+                window.location.href = "index.html"; // Redirigimos al menú principal del alumno
+
+            } catch (error) {
+                console.error("Error de conexión:", error);
+                alert("No se pudo conectar con el servidor backend.");
+            }
+        });
     </script>
 </body>
 </html>

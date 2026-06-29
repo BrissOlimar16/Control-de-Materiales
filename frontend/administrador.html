@@ -11,7 +11,6 @@
 </head>
 <body class="bg-slate-900 min-h-screen text-slate-100 flex flex-col md:flex-row">
 
-    <!-- Barra Lateral (Sidebar) -->
     <div class="w-full md:w-64 bg-slate-800/60 backdrop-blur-xl border-r border-slate-700/60 p-6 flex flex-col justify-between gap-6">
         <div class="space-y-6">
             <div class="flex items-center gap-3 border-b border-slate-700/60 pb-4">
@@ -38,23 +37,20 @@
         </a>
     </div>
 
-    <!-- Contenido Principal -->
     <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
-        <!-- Banner superior -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-800/40 border border-slate-700/50 p-6 rounded-2xl">
             <div>
                 <h1 class="text-2xl font-extrabold text-white">Panel de Control General</h1>
                 <p class="text-xs text-slate-400 mt-1">Monitoreo de inventarios, alertas y aprobación de solicitudes para la UNSIS.</p>
             </div>
             <div class="flex gap-3">
-                <button class="bg-blue-600 hover:bg-blue-500 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-600/20">
+                <button id="btnNuevoMaterial" class="bg-blue-600 hover:bg-blue-500 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-600/20">
                     <i class="fa-solid fa-plus mr-2"></i>Nuevo Material
                 </button>
             </div>
         </div>
 
-        <!-- SECCIÓN 1: SOLICITUDES PENDIENTES (ALERTAS) -->
-        <section id="solicitudes" class="space-y-4">
+        <section id="solicitudes" class="space-y-4 de-seccion">
             <h2 class="text-lg font-bold text-white flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Solicitar por Autorizar / Entregar
             </h2>
@@ -85,8 +81,7 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 2: INVENTARIO / STOCK -->
-        <section id="inventario" class="space-y-4 pt-4">
+        <section id="inventario" class="space-y-4 pt-4 de-seccion hidden">
             <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-box-open text-blue-500 mr-2"></i>Monitoreo de Stock Actual</h2>
             <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-800/20">
                 <table class="w-full text-left border-collapse text-sm">
@@ -101,21 +96,205 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-700/40">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="historial" class="space-y-4 pt-4 de-seccion hidden">
+            <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-list-check text-blue-500 mr-2"></i>Historial de Vales Concluidos</h2>
+            <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-800/20">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-4">ID Vale</th>
+                            <th class="p-4">Alumno</th>
+                            <th class="p-4">Laboratorio</th>
+                            <th class="p-4">Estado</th>
+                            <th class="p-4 text-center">Fecha Devolución</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/40 text-slate-400">
                         <tr class="hover:bg-slate-800/30 transition-all">
-                            <td class="p-4 font-mono text-xs text-slate-400">CETI-001</td>
-                            <td class="p-4 text-slate-200 font-medium">Cable HDMI 5 metros</td>
-                            <td class="p-4 text-slate-400">Herramientas</td>
-                            <td class="p-4 text-center text-slate-300">15</td>
-                            <td class="p-4 text-center"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold text-xs">15</span></td>
-                            <td class="p-4 text-center">
-                                <button class="text-blue-400 hover:text-blue-300 mr-2"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
-                            </td>
+                            <td class="p-4 font-mono text-xs">#V-1024</td>
+                            <td class="p-4 text-slate-300">Juan Pérez</td>
+                            <td class="p-4 text-blue-400">CETI</td>
+                            <td class="p-4"><span class="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full text-xs font-bold">Devuelto</span></td>
+                            <td class="p-4 text-center">2026-06-25</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
     </main>
+
+    <div id="modalMaterial" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-box-open text-blue-500"></i> Registrar Nuevo Material
+                </h3>
+                <button type="button" id="btnCerrarModal" class="text-slate-400 hover:text-white transition-all text-xl">&times;</button>
+            </div>
+
+            <form id="formMaterial" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Código Institucional</label>
+                    <input type="text" id="matCodigo" required placeholder="Ej. CETI-002" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Descripción / Nombre</label>
+                    <input type="text" id="matDescripcion" required placeholder="Ej. Osciloscopio Digital" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Categoría</label>
+                    <select id="matCategoria" required 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer">
+                        <option value="Herramientas">Herramientas</option>
+                        <option value="Electrónica">Componentes / Electrónica</option>
+                        <option value="Cómputo">Equipo de Cómputo</option>
+                        <option value="Médico">Material Clínico / Médico</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Stock Inicial Total</label>
+                    <input type="number" id="matStock" required min="1" placeholder="Ej. 10" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2 border-t border-slate-700">
+                    <button type="button" id="btnCancelar" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-xl text-sm font-semibold text-slate-200 transition-all">Cancelar</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all shadow-lg shadow-blue-600/20">Guardar Material</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalMaterial');
+        const btnNuevo = document.getElementById('btnNuevoMaterial') || document.querySelector('main button'); // Respaldo por si acaso
+        const btnCerrar = document.getElementById('btnCerrarModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const formMaterial = document.getElementById('formMaterial');
+
+        // --- FUNCIONES DEL MODAL ---
+        btnNuevo.addEventListener('click', () => modal.classList.remove('hidden'));
+        
+        const cerrarModal = () => {
+            modal.classList.add('hidden');
+            formMaterial.reset();
+        };
+        btnCerrar.addEventListener('click', cerrarModal);
+        btnCancelar.addEventListener('click', cerrarModal);
+
+        async function cargarInventario() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/materiales');
+                const materiales = await respuesta.json();
+
+                // Buscamos el tbody que está dentro de la sección #inventario
+                const tbody = document.querySelector('#inventario table tbody');
+                tbody.innerHTML = ''; 
+
+                if (materiales.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="p-4 text-center text-slate-500">No hay materiales registrados en phpMyAdmin.</td>
+                        </tr>`;
+                    return;
+                }
+
+                materiales.forEach(material => {
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
+                    
+                    fila.innerHTML = `
+                        <td class="p-4 font-mono text-xs text-slate-400">${material.codigo}</td>
+                        <td class="p-4 text-slate-200 font-medium">${material.descripcion}</td>
+                        <td class="p-4 text-slate-400">${material.categoria}</td>
+                        <td class="p-4 text-center text-slate-300">${material.stock_total}</td>
+                        <td class="p-4 text-center">
+                            <span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold text-xs">
+                                ${material.stock_disponible}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button class="text-blue-400 hover:text-blue-300 mr-2" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="text-rose-400 hover:text-rose-300" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar el inventario:", error);
+            }
+        }
+
+        formMaterial.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const codigo = document.getElementById('matCodigo').value.trim();
+            const descripcion = document.getElementById('matDescripcion').value.trim();
+            const categoryElement = document.getElementById('matCategoria');
+            const categoria = categoryElement.options[categoryElement.selectedIndex].value;
+            const stock_total = parseInt(document.getElementById('matStock').value);
+
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/materiales', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ codigo, descripcion, categoria, stock_total })
+                });
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    alert(resultado.error || "Hubo un problema al guardar.");
+                    return;
+                }
+
+                alert("¡Material añadido exitosamente!");
+                cerrarModal();
+                cargarInventario(); // Recargamos la lista automáticamente sin refrescar la página
+
+            } catch (error) {
+                console.error("Error al conectar:", error);
+                alert("Error de conexión con el backend.");
+            }
+        });
+
+        const enlacesSidebar = document.querySelectorAll('nav a');
+        const secciones = document.querySelectorAll('.de-seccion');
+
+        enlacesSidebar.forEach(enlace => {
+            enlace.addEventListener('click', function(e) {
+                e.preventDefault(); // Evita que la URL cambie bruscamente con el #hash
+
+                // 1. Quitamos los estilos activos (fondo azul) de todos los botones de la barra lateral
+                enlacesSidebar.forEach(btn => {
+                    btn.className = "flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all";
+                });
+
+                // 2. Le ponemos el estilo activo (azul fuerte) solo al botón que presionamos
+                this.className = "flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-blue-600/10";
+
+                // 3. Ocultamos todas las secciones agregándoles la clase 'hidden'
+                secciones.forEach(sec => sec.classList.add('hidden'));
+
+                // 4. Obtenemos el ID de la sección correspondiente (ej. #inventario) y le quitamos el 'hidden'
+                const targetId = this.getAttribute('href').substring(1);
+                const seccionDestino = document.getElementById(targetId);
+                if (seccionDestino) {
+                    seccionDestino.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Cargar automáticamente al abrir la vista
+        document.addEventListener('DOMContentLoaded', cargarInventario);
+    </script>
 </body>
 </html>

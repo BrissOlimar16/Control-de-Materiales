@@ -74,6 +74,50 @@
     </div>
 
     <script>
+        document.getElementById('formLogin').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Evita que la página se recargue
+
+            const usuario = document.getElementById('usuario').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                // Hacemos la petición POST real a tu servidor de Node.js (puerto 5000)
+                const respuesta = await fetch('http://localhost:5000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ usuario, password })
+                });
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    // Si el servidor responde con error (401 o 500), mostramos el mensaje de la BD
+                    alert(resultado.error || "Error al iniciar sesión");
+                    return;
+                }
+
+                // Si el login es exitoso, guardamos los datos del usuario en la sesión del navegador
+                localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
+                
+                alert(`¡Bienvenido(a) ${resultado.usuario.nombre}!`);
+
+                // Redirección automática real según el ROL de la Base de Datos
+                if (resultado.usuario.rol === 'administrador' || resultado.usuario.rol === 'laboratorista') {
+                    window.location.href = "administrador.html";
+                } else if (resultado.usuario.rol === 'alumno') {
+                    window.location.href = "index.html";
+                }
+
+            } catch (error) {
+                console.error("Error de conexión:", error);
+                alert("No se pudo conectar con el servidor backend. Asegúrate de que Node.js esté corriendo.");
+            }
+        });
+    </script>
+
+    <!--script>
         document.getElementById('formLogin').addEventListener('submit', function(e) {
             e.preventDefault(); // Evita que la página se recargue automáticamente
 
@@ -96,6 +140,6 @@
                 alert("Matrícula o contraseña incorrectos. Intenta con 20260001 (Admin) o 20260002 (Alumno).");
             }
         });
-    </script>
+    </script-->
 </body>
 </html>
