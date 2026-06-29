@@ -46,7 +46,7 @@
                 <p class="text-sm text-slate-400 mt-2">¿En qué laboratorio solicitarás material hoy?</p>
             </div>
 
-            <form action="formulario.html" method="GET" class="space-y-6 text-left">
+            <form id="formLaboratorio" method="GET" class="space-y-6 text-left">
                 <div>
                     <label for="laboratorio" class="block text-sm font-semibold text-slate-300 mb-2">
                         <i class="fa-solid fa-flask text-blue-500 mr-2"></i>Seleccione el Laboratorio / Centro
@@ -78,5 +78,30 @@
     <footer class="w-full text-center py-4 relative z-10">
         <p class="text-[10px] text-slate-600 tracking-wider">Módulo de Solicitudes v1.0 — UNSIS</p>
     </footer>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const laboratorio = params.get("laboratorio");
+
+        if (laboratorio) {
+            document.getElementById("nombreLaboratorio").textContent = laboratorio;
+        }
+
+        document.getElementById("formLaboratorio").addEventListener("submit", function(e) {
+
+            e.preventDefault();
+
+            const laboratorio = document.getElementById("laboratorio").value;
+
+            if (laboratorio === "CETI") {
+               window.location.href = "formulario.html?laboratorio=" + encodeURIComponent(laboratorio);
+
+            } else {
+                alert("Por el momento solo está disponible el laboratorio CETI.");
+            }
+
+        });
+    </script>
+
 </body>
 </html>

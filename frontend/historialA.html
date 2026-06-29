@@ -68,8 +68,8 @@
         
 
     <script>
+        // --- FUNCIÓN FETCH: CONSULTAR EL HISTORIAL Y DETECTAR ADVERTENCIAS ---
         async function cargarHistorialAlumno() {
-            // 1. Recuperamos los datos del alumno logueado
             const infoSesion = localStorage.getItem('usuario');
             if (!infoSesion) {
                 window.location.href = "login.html";
@@ -77,13 +77,12 @@
             }
             
             const { matricula } = JSON.parse(infoSesion);
-
+            const tbody = document.querySelector('#tablaHistorial tbody');
+            
             try {
-                // 2. Consultamos la API que acabamos de crear
                 const respuesta = await fetch(`http://localhost:5000/api/prestamos/alumno/${matricula}`);
                 const vales = await respuesta.json();
 
-                const tbody = document.querySelector('#tablaHistorial tbody');
                 tbody.innerHTML = '';
 
                 if (vales.length === 0) {
@@ -94,23 +93,29 @@
                     return;
                 }
 
-                // Mapeo de estilos visuales para los badges de estado
+                // Configuración de colores para los Badges
                 const estadosConfig = {
-                    'pendiente': { texto: 'Pendiente', clase: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
-                    'activo': { texto: 'Aprobado / Con Alumno', clase: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-                    'devuelto': { texto: 'Devuelto', clase: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
-                    'retrasado': { texto: 'Con Retraso', clase: 'bg-rose-500/20 text-rose-400 border-rose-500/30' }
+                    'pendiente': { texto: 'Pendiente', clase: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
+                    'activo': { texto: 'Aprobado', clase: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+                    'devuelto': { texto: 'Devuelto', clase: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                    'retrasado': { texto: 'Retrasado / Vencido', clase: 'bg-rose-500/10 text-rose-400 border-rose-500/20 animate-pulse' }
                 };
 
-                // 3. Pintamos las filas correspondientes
+                // Variable para rastrear si el alumno tiene algún retraso
+                let tieneRetraso = false;
+
                 vales.forEach(vale => {
-                    const config = estadosConfig[vale.estado] || { texto: vale.estado, clase: 'bg-slate-500/20 text-slate-400' };
+                    if (vale.estado === 'retrasado') {
+                        tieneRetraso = true;
+                    }
+
+                    const config = estadosConfig[vale.estado] || { texto: vale.estado, clase: 'bg-slate-500/10 text-slate-400' };
                     const fila = document.createElement('tr');
-                    fila.className = "hover:bg-slate-800/20 transition-all";
+                    fila.className = vale.estado === 'retrasado' ? "bg-rose-950/10 hover:bg-rose-950/20 transition-all" : "hover:bg-slate-800/40 transition-all";
 
                     fila.innerHTML = `
                         <td class="p-4 font-semibold text-white">${vale.laboratorio}</td>
-                        <td class="p-4">${vale.cantidad}x — ${vale.descripcion}</td>
+                        <td class="p-4 text-slate-300">${vale.cantidad}x — ${vale.descripcion}</td>
                         <td class="p-4 text-slate-400">${vale.fecha_solicitud.split('T')[0]}</td>
                         <td class="p-4 text-center">
                             <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${config.clase}">
@@ -120,6 +125,32 @@
                     `;
                     tbody.appendChild(fila);
                 });
+
+                // --- MANEJO DE LA ADVERTENCIA DE RETRASO ---
+                // Buscamos si existe un contenedor para alertas o creamos uno dinámico arriba de la tabla
+                let contenedorAlerta = document.getElementById('alertaRetraso');
+                
+                if (tieneRetraso) {
+                    // Si no existe el bloque de alerta en el HTML, lo creamos justo antes de la tabla
+                    if (!contenedorAlerta) {
+                        contenedorAlerta = document.createElement('div');
+                        contenedorAlerta.id = "alertaRetraso";
+                        const tablaContenedor = document.getElementById('tablaHistorial').parentElement.parentElement;
+                        tablaContenedor.parentNode.insertBefore(contenedorAlerta, tablaContenedor);
+                    }
+                    
+                    // Diseñamos un banner rojo parpadeante muy institucional
+                    contenedorAlerta.className = "mb-6 bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 flex items-center gap-3 text-rose-400 text-sm shadow-lg shadow-rose-950/20";
+                    contenedorAlerta.innerHTML = `
+                        <i class="fa-solid fa-triangle-exclamation text-lg animate-bounce"></i>
+                        <div>
+                            <span class="font-bold">¡Atención!</span> Tienes materiales con la fecha de devolución vencida. Por favor, acude al laboratorio correspondiente de inmediato para evitar la suspensión de tus derechos de préstamo.
+                        </div>
+                    `;
+                } else if (contenedorAlerta) {
+                    // Si ya no tiene retrasos (porque ya los devolvió), eliminamos la alerta de la pantalla
+                    contenedorAlerta.remove();
+                }
 
             } catch (error) {
                 console.error("Error al cargar el historial:", error);
