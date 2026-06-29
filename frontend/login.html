@@ -116,30 +116,5 @@
             }
         });
     </script>
-
-    <!--script>
-        document.getElementById('formLogin').addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita que la página se recargue automáticamente
-
-            const matricula = document.getElementById('usuario').value.trim();
-            const contrasena = document.getElementById('password').value;
-
-            // SIMULACIÓN TEMPORAL DE ROLES (Esto después lo consultaremos a la base de datos)
-            if (matricula === '20260001' && contrasena === '123456') {
-                // Caso: Administrador (Brisa) -> Al panel de control
-                alert("¡Bienvenida Administradora!");
-                window.location.href = "administrador.html";
-            } 
-            else if (matricula === '20260002' && contrasena === 'alumno123') {
-                // Caso: Alumno -> A seleccionar laboratorio para su vale
-                alert("Inicio de sesión exitoso como Alumno");
-                window.location.href = "index.html";
-            } 
-            else {
-                // Caso: Datos incorrectos
-                alert("Matrícula o contraseña incorrectos. Intenta con 20260001 (Admin) o 20260002 (Alumno).");
-            }
-        });
-    </script-->
 </body>
 </html>
