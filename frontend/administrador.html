@@ -24,6 +24,7 @@
                 <a href="#solicitudes" class="flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-blue-600/10">
                     <i class="fa-solid fa-clock-rotate-left w-5"></i> Solicitudes Pendientes
                 </a>
+
                 <a href="#inventario" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all">
                     <i class="fa-solid fa-boxes-stacked w-5"></i> Stock / Inventario
                 </a>
@@ -81,6 +82,8 @@
             </div>
         </section>
 
+        
+
         <section id="inventario" class="space-y-4 pt-4 de-seccion hidden">
             <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-box-open text-blue-500 mr-2"></i>Monitoreo de Stock Actual</h2>
             <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-800/20">
@@ -125,6 +128,26 @@
                     </tbody>
                 </table>
             </div>
+            <div id="devoluciones" class="mt-8 bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-hand-holding-hand text-amber-500"></i> Materiales en Préstamo (Activos)
+            </h2>
+            <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/20">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-4">Alumno</th>
+                            <th class="p-4">Laboratorio</th>
+                            <th class="p-4">Material Prestado</th>
+                            <th class="p-4">Fecha Préstamo</th>
+                            <th class="p-4 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/60 text-sm">
+                        </tbody>
+                </table>
+            </div>
+        </div>
         </section>
     </main>
 
@@ -293,8 +316,152 @@
             });
         });
 
-        // Cargar automáticamente al abrir la vista
-        document.addEventListener('DOMContentLoaded', cargarInventario);
+        // --- FUNCIÓN: CARGAR SOLICITUDES PENDIENTES DESDE LA BASE DE DATOS ---
+        async function cargarSolicitudesPendientes() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/pendientes');
+                const solicitudes = await respuesta.json();
+
+                const tbody = document.querySelector('#solicitudes table tbody');
+                tbody.innerHTML = ''; // Limpiamos la fila estática anterior
+
+                if (solicitudes.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="p-4 text-center text-slate-500">No hay solicitudes de vales por autorizar.</td>
+                        </tr>`;
+                    return;
+                }
+
+                solicitudes.forEach(sol => {
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
+                    
+                    fila.innerHTML = `
+                        <td class="p-4 font-semibold text-white">${sol.solicitante} <span class="text-xs text-slate-500 font-mono block">${sol.usuario_id}</span></td>
+                        <td class="p-4 text-blue-400 font-medium">${sol.laboratorio}</td>
+                        <td class="p-4 text-slate-300">${sol.cantidad}x — ${sol.codigo_material}</td>
+                        <td class="p-4 text-slate-400">${sol.fecha_solicitud.split('T')[0]}</td>
+                        <td class="p-4 flex justify-center gap-2">
+                            <button onclick="procesarSolicitud(${sol.id}, 'aprobar')" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all">Aprobar</button>
+                            <button onclick="procesarSolicitud(${sol.id}, 'rechazar')" class="bg-rose-600/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-all">Rechazar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error("Error al cargar las solicitudes pendientes:", error);
+            }
+        }
+
+        // --- FUNCIÓN: PROCESAR APROBACIÓN O RECHAZO ---
+        async function procesarSolicitud(id_prestamo, accion) {
+            const confirmar = confirm(`¿Estás seguro de que deseas ${accion} esta solicitud?`);
+            if (!confirmar) return;
+
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/accion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_prestamo, accion })
+                });
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    alert(resultado.error || "Hubo un error al procesar la acción.");
+                    return;
+                }
+
+                alert(resultado.mensaje);
+                
+                // Recargamos ambas tablas para mantener sincronizado el sistema
+                cargarSolicitudesPendientes();
+                cargarInventario(); 
+
+            } catch (error) {
+                console.error("Error al conectar con la API:", error);
+                alert("Error de comunicación con el servidor.");
+            }
+        }
+
+        // --- FUNCIÓN: CARGAR PRÉSTAMOS ACTIVOS DESDE EL BACKEND ---
+        async function cargarPrestamosActivos() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/activos');
+                const activos = await respuesta.json();
+
+                const tbody = document.querySelector('#devoluciones table tbody');
+                tbody.innerHTML = '';
+
+                if (activos.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="p-4 text-center text-slate-500">No hay materiales actualmente en manos de ningún alumno.</td>
+                        </tr>`;
+                    return;
+                }
+
+                activos.forEach(act => {
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
+                    
+                    fila.innerHTML = `
+                        <td class="p-4 font-semibold text-white">${act.solicitante} <span class="text-xs text-slate-500 font-mono block">${act.usuario_id}</span></td>
+                        <td class="p-4 text-blue-400 font-medium">${act.laboratorio}</td>
+                        <td class="p-4 text-slate-300">${act.cantidad}x — ${act.descripcion}</td>
+                        <td class="p-4 text-slate-400">${act.fecha_solicitud.split('T')[0]}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="registrarDevolucion(${act.id})" class="bg-amber-600/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 hover:text-slate-900 transition-all">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Recibir Devolución
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error("Error al cargar préstamos activos:", error);
+            }
+        }
+
+        // --- FUNCIÓN: MANDAR LA PETICIÓN DE DEVOLUCIÓN ---
+        async function registrarDevolucion(id_prestamo) {
+            const confirmar = confirm("¿Confirmas que el alumno ha devuelto el material en buen estado?");
+            if (!confirmar) return;
+
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/devolver', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_prestamo })
+                });
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    alert(resultado.error || "Error al procesar la devolución.");
+                    return;
+                }
+
+                alert(resultado.mensaje);
+                
+                // Refrescamos absolutamente todo el panel para ver el stock reajustado al instante
+                cargarSolicitudesPendientes();
+                cargarPrestamosActivos();
+                cargarInventario();
+
+            } catch (error) {
+                console.error("Error al conectar con la API:", error);
+                alert("Error de comunicación con el servidor.");
+            }
+        }
+
+        // Modificamos el listener de carga inicial para que llame a ambas funciones
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarSolicitudesPendientes();
+            cargarPrestamosActivos();
+            cargarInventario();
+        });
     </script>
 </body>
 </html>

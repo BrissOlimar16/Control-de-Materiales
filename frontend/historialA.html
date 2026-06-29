@@ -41,43 +41,94 @@
                 <span>Recuerda que debes devolver tus materiales a tiempo en el laboratorio correspondiente para evitar sanciones en tu historial académico.</span>
             </div>
 
-            <!-- Tabla de Historial Personal -->
-            <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900/20">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
-                            <th class="p-4">Material / Artículo</th>
-                            <th class="p-4">Laboratorio</th>
-                            <th class="p-4">Fecha Préstamo</th>
-                            <th class="p-4">Fecha Entrega</th>
-                            <th class="p-4 text-center">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60">
-                        <!-- Caso Activo / En posesión -->
-                        <tr class="hover:bg-slate-800/30 transition-all">
-                            <td class="p-4 font-semibold text-white">1x Multímetro Digital Steren</td>
-                            <td class="p-4 text-slate-400">CETI</td>
-                            <td class="p-4 text-slate-400">2026-06-25</td>
-                            <td class="p-4 text-slate-400">2026-06-30</td>
-                            <td class="p-4 text-center">
-                                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full text-xs font-bold">Pendiente</span>
-                            </td>
-                        </tr>
-                        <!-- Caso Ya devuelto -->
-                        <tr class="hover:bg-slate-800/30 transition-all">
-                            <td class="p-4 font-semibold text-slate-400">2x Cable HDMI 5 metros</td>
-                            <td class="p-4 text-slate-400">CETI</td>
-                            <td class="p-4 text-slate-400">2026-05-12</td>
-                            <td class="p-4 text-slate-400">2026-05-12</td>
-                            <td class="p-4 text-center">
-                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full text-xs font-bold">Devuelto</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="max-w-5xl mx-auto mt-12 bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-xl">
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-blue-500"></i> Estado de mis Solicitudes
+                    </h2>
+                    <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/20">
+                        <table id="tablaHistorial" class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                                    <th class="p-4">Laboratorio</th>
+                                    <th class="p-4">Material / Cantidad</th>
+                                    <th class="p-4">Fecha Solicitud</th>
+                                    <th class="p-4 text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700/60 text-sm text-slate-300">
+                                <tr>
+                                    <td colspan="4" class="p-4 text-center text-slate-500">Cargando tu historial...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        
+
+    <script>
+        async function cargarHistorialAlumno() {
+            // 1. Recuperamos los datos del alumno logueado
+            const infoSesion = localStorage.getItem('usuario');
+            if (!infoSesion) {
+                window.location.href = "login.html";
+                return;
+            }
+            
+            const { matricula } = JSON.parse(infoSesion);
+
+            try {
+                // 2. Consultamos la API que acabamos de crear
+                const respuesta = await fetch(`http://localhost:5000/api/prestamos/alumno/${matricula}`);
+                const vales = await respuesta.json();
+
+                const tbody = document.querySelector('#tablaHistorial tbody');
+                tbody.innerHTML = '';
+
+                if (vales.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="p-4 text-center text-slate-500">Aún no has solicitado ningún material.</td>
+                        </tr>`;
+                    return;
+                }
+
+                // Mapeo de estilos visuales para los badges de estado
+                const estadosConfig = {
+                    'pendiente': { texto: 'Pendiente', clase: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
+                    'activo': { texto: 'Aprobado / Con Alumno', clase: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+                    'devuelto': { texto: 'Devuelto', clase: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+                    'retrasado': { texto: 'Con Retraso', clase: 'bg-rose-500/20 text-rose-400 border-rose-500/30' }
+                };
+
+                // 3. Pintamos las filas correspondientes
+                vales.forEach(vale => {
+                    const config = estadosConfig[vale.estado] || { texto: vale.estado, clase: 'bg-slate-500/20 text-slate-400' };
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/20 transition-all";
+
+                    fila.innerHTML = `
+                        <td class="p-4 font-semibold text-white">${vale.laboratorio}</td>
+                        <td class="p-4">${vale.cantidad}x — ${vale.descripcion}</td>
+                        <td class="p-4 text-slate-400">${vale.fecha_solicitud.split('T')[0]}</td>
+                        <td class="p-4 text-center">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold border ${config.clase}">
+                                ${config.texto}
+                            </span>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar el historial:", error);
+            }
+        }
+
+        // Ejecutar cuando se cargue la página principal del alumno
+        document.addEventListener('DOMContentLoaded', cargarHistorialAlumno);
+    </script>
+
 </body>
 </html>
