@@ -78,6 +78,40 @@ app.get('/api/materiales', async (req, res) => {
     }
 });
 
+
+app.post('/api/prestamos', async (req, res) => {
+    const { usuario_id, laboratorio, fecha_solicitud, fecha_entrega, materiales } = req.body;
+
+    if (!usuario_id || !laboratorio || !fecha_solicitud || !materiales || materiales.length === 0) {
+        return res.status(400).json({ error: "Faltan datos obligatorios." });
+    }
+
+    try {
+        // Al ser la matrícula la llave directa, insertamos de inmediato de forma limpia
+        const query = `
+            INSERT INTO prestamos (usuario_id, codigo_material, laboratorio, cantidad, fecha_solicitud, fecha_entrega_estimada, estado) 
+            VALUES (?, ?, ?, ?, ?, ?, 'pendiente')
+        `;
+
+        for (const mat of materiales) {
+            await db.execute(query, [
+                usuario_id,          // Matrícula directa (ej: '20260002')
+                mat.codigo,          // Código de material directo (ej: 'CETI-001')
+                laboratorio,
+                mat.cantidad,
+                fecha_solicitud,
+                fecha_entrega || null
+            ]);
+        }
+
+        res.status(201).json({ mensaje: "¡Solicitud de vale enviada con éxito!" });
+
+    } catch (error) {
+        console.error("Error al registrar el préstamo:", error);
+        res.status(500).json({ error: "Error interno al procesar el vale." });
+    }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
