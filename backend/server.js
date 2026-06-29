@@ -211,6 +211,25 @@ app.get('/api/prestamos/activos', async (req, res) => {
     }
 });
 
+app.get('/api/prestamos/concluidos', async (req, res) => {
+    try {
+        const query = `
+            SELECT p.id, u.nombre AS solicitante, p.laboratorio, 
+                   p.codigo_material, m.descripcion, p.cantidad, p.fecha_devolucion_real
+            FROM prestamos p
+            INNER JOIN usuarios u ON p.usuario_id = u.matricula
+            INNER JOIN materiales m ON p.codigo_material = m.codigo
+            WHERE p.estado = 'devuelto'
+            ORDER BY p.fecha_devolucion_real DESC
+        `;
+        const [resultado] = await db.execute(query);
+        res.json(resultado);
+    } catch (error) {
+        console.error("Error al obtener vales concluidos:", error);
+        res.status(500).json({ error: "Error al cargar el historial de concluidos." });
+    }
+});
+
 app.post('/api/prestamos/devolver', async (req, res) => {
     const { id_prestamo } = req.body;
 
@@ -260,7 +279,8 @@ app.get('/api/prestamos/alumno/:matricula', async (req, res) => {
     try {
         const query = `
             SELECT p.id, p.laboratorio, m.descripcion, p.cantidad, 
-                   p.fecha_solicitud, p.estado, p.fecha_devolucion_real
+                   p.fecha_solicitud, p.fecha_entrega_estimada,
+                   IF(p.estado = 'activo' AND p.fecha_entrega_estimada < CURDATE(), 'retrasado', p.estado) AS estado
             FROM prestamos p
             INNER JOIN materiales m ON p.codigo_material = m.codigo
             WHERE p.usuario_id = ?
