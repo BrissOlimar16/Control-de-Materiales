@@ -157,256 +157,215 @@
     </div>
 
     <script>
-        // 1. Obtener los parámetros de la URL para el laboratorio
-        const urlParams = new URLSearchParams(window.location.search);
-        const laboratorio = urlParams.get('laboratorio') || 'No seleccionado';
-        document.getElementById('label-laboratorio').textContent = laboratorio;
+    const urlParams = new URLSearchParams(window.location.search);
+    const laboratorio = urlParams.get('laboratorio') || 'No seleccionado';
+    document.getElementById('label-laboratorio').textContent = laboratorio;
 
-        // Elementos de la interfaz para el buscador dinámico
-        const inputBuscar = document.getElementById('buscar');
-        const btnBuscar = inputBuscar.nextElementSibling; // El botón "Buscar" que está al lado
-        const contenedorLista = inputBuscar.parentElement.nextElementSibling; // El div flotante de sugerencias
+    const inputBuscar = document.getElementById('buscar');
+    const btnBuscar = inputBuscar.nextElementSibling; 
+    const contenedorLista = inputBuscar.parentElement.nextElementSibling; 
+    const btnAgregarFila = document.getElementById('btnAgregarFila');
+    const tbodyTabla = document.querySelector('table tbody');
+    const formSolicitud = document.getElementById('formSolicitud');
 
-        let todosLosMateriales = []; // Aquí guardaremos lo que traigamos de la base de datos
+    let todosLosMateriales = [];
 
-        // 2. Obtener los materiales desde el Backend al cargar la página
-        async function obtenerMaterialesBackend() {
-            try {
-                const respuesta = await fetch('http://localhost:5000/api/materiales');
-                todosLosMateriales = await respuesta.json();
-            } catch (error) {
-                console.error("Error al conectar con la API de materiales:", error);
-            }
+    async function obtenerMaterialesBackend() {
+        try {
+            const respuesta = await fetch('http://localhost:5000/api/materiales');
+            todosLosMateriales = await respuesta.json();
+        } catch (error) {
+            console.error("Error al conectar con la API de materiales:", error);
+        }
+    }
+
+    function mostrarSugerencias() {
+        const texto = inputBuscar.value.trim().toLowerCase();
+        contenedorLista.innerHTML = '';
+
+        if (texto === '') {
+            contenedorLista.classList.add('hidden');
+            return;
         }
 
-        // 3. Filtrar y mostrar las sugerencias según lo que escriba el alumno
-        function mostrarSugerencias() {
-            const texto = inputBuscar.value.trim().toLowerCase();
-            contenedorLista.innerHTML = ''; // Limpiamos la lista vieja
+        const filtrados = todosLosMateriales.filter(m => 
+            m.descripcion.toLowerCase().includes(texto) || 
+            m.codigo.toLowerCase().includes(texto)
+        );
 
-            if (texto === '') {
-                contenedorLista.classList.add('hidden');
-                return;
-            }
-
-            // Filtramos los materiales por descripción o código
-            const filtrados = todosLosMateriales.filter(m => 
-                m.descripcion.toLowerCase().includes(texto) || 
-                m.codigo.toLowerCase().includes(texto)
-            );
-
-            if (filtrados.length === 0) {
-                contenedorLista.innerHTML = `<div class="px-4 py-2.5 text-slate-500 text-sm">No se encontraron coincidencias</div>`;
-                contenedorLista.classList.remove('hidden');
-                return;
-            }
-
-            // Agregamos los materiales que coincidieron a la lista desplegable
-            filtrados.forEach(material => {
-                const item = document.createElement('div');
-                item.className = "px-4 py-2.5 hover:bg-slate-700/50 cursor-pointer flex justify-between items-center border-b border-slate-700/40 text-sm transition-all";
-                
-                // Badge dinámico según la disponibilidad real de la base de datos
-                const badgeColor = material.stock_disponible > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400';
-                const badgeTexto = material.stock_disponible > 0 ? `Disponible: ${material.stock_disponible}` : 'Agotado';
-
-                item.innerHTML = `
-                    <span>${material.descripcion}</span>
-                    <span class="text-xs ${badgeColor} px-2 py-0.5 rounded-full font-bold">${badgeTexto}</span>
-                `;
-
-                // Al hacer clic en un artículo sugerido, lo mandamos a la tabla
-                item.addEventListener('click', () => {
-                    if (material.stock_disponible <= 0) {
-                        alert("Este material está agotado actualmente.");
-                        return;
-                    }
-                    rellenarFilaActual(material);
-                    contenedorLista.classList.add('hidden');
-                    inputBuscar.value = ''; // Limpiamos el buscador
-                });
-
-                contenedorLista.appendChild(item);
-            });
-
+        if (filtrados.length === 0) {
+            contenedorLista.innerHTML = `<div class="px-4 py-2.5 text-slate-500 text-sm">No se encontraron coincidencias</div>`;
             contenedorLista.classList.remove('hidden');
+            return;
         }
 
-        // 4. Rellenar de manera automática los inputs de la tabla al seleccionar un artículo
-        function rellenarFilaActual(material) {
-            const tbody = document.querySelector('table tbody');
-            const ultimaFila = tbody.lastElementChild;
+        filtrados.forEach(material => {
+            const item = document.createElement('div');
+            item.className = "px-4 py-2.5 hover:bg-slate-700/50 cursor-pointer flex justify-between items-center border-b border-slate-700/40 text-sm transition-all";
+            
+            const badgeColor = material.stock_disponible > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400';
+            const badgeTexto = material.stock_disponible > 0 ? `Disponible: ${material.stock_disponible}` : 'Agotado';
 
-            // Obtenemos los campos de texto dentro de esa fila
-            const inputDesc = ultimaFila.cells[1].querySelector('input');
-            const inputCant = ultimaFila.cells[2].querySelector('input');
-            const inputCodigo = ultimaFila.cells[3].querySelector('input');
+            item.innerHTML = `
+                <span>${material.descripcion}</span>
+                <span class="text-xs ${badgeColor} px-2 py-0.5 rounded-full font-bold">${badgeTexto}</span>
+            `;
 
-            // Inyectamos los valores reales de la base de datos
-            inputDesc.value = material.descripcion;
-            inputCodigo.value = material.codigo;
-            inputCant.max = material.stock_disponible; // No permite pedir más del stock existente
-            inputCant.value = 1;
-        }
-
-        // Escuchadores de eventos para el buscador
-        inputBuscar.addEventListener('input', mostrarSugerencias);
-
-        // Ocultar la lista si el alumno hace clic en cualquier otra parte de la pantalla
-        document.addEventListener('click', (e) => {
-            if (!inputBuscar.contains(e.target) && !contenedorLista.contains(e.target)) {
-                contenedorLista.classList.add('hidden');
-            }
-        });
-
-        // Inicializar carga de datos
-        document.addEventListener('DOMContentLoaded', obtenerMaterialesBackend);
-
-        // --- FUNCIÓN: ENVIAR EL VALE AL BACKEND ---
-        const formSolicitud = document.getElementById('formSolicitud');
-
-        formSolicitud.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evita que la página se recargue sola
-
-            // 1. Recuperamos los datos del alumno desde la sesión del localStorage
-            const infoSesion = localStorage.getItem('usuario');
-            if (!infoSesion) {
-                alert("Sesión expirada. Por favor, vuelve a iniciar sesión.");
-                window.location.href = "login.html";
-                return;
-            }
-            const usuario_id = JSON.parse(infoSesion).matricula;
-
-            // 2. Recolectamos los datos de los inputs generales
-            const fecha_solicitud = document.getElementById('fechaSolicitud').value;
-            const checkNoDefinido = document.getElementById('checkNoDefinido').checked;
-            const fecha_entrega = checkNoDefinido ? null : document.getElementById('fechaEntrega').value;
-
-            // 3. Recorremos las filas de la tabla para armar el arreglo de materiales a pedir
-            const materialesAEnviar = [];
-            const filas = document.querySelectorAll('table tbody tr');
-
-            filas.forEach(fila => {
-                const codigo = fila.cells[3].querySelector('input').value.trim();
-                const cantidad = parseInt(fila.cells[2].querySelector('input').value);
-                const descripcion = fila.cells[1].querySelector('input').value.trim();
-
-                // Solo agregamos si la fila tiene un código válido inyectado por el buscador
-                if (codigo && cantidad > 0) {
-                    materialesAEnviar.push({ codigo, cantidad, descripcion });
-                }
-            });
-
-            if (materialesAEnviar.length === 0) {
-                alert("Debes agregar al menos un material válido usando el buscador.");
-                return;
-            }
-
-            // 4. Estructuramos el JSON final para mandarlo a la API
-            const datosVale = {
-                usuario_id,
-                laboratorio, // Variable global que ya extrae el nombre del laboratorio de la URL
-                fecha_solicitud,
-                fecha_entrega,
-                materiales: materialesAEnviar
-            };
-
-            try {
-                const respuesta = await fetch('http://localhost:5000/api/prestamos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datosVale)
-                });
-
-                const resultado = await respuesta.json();
-
-                if (!respuesta.ok) {
-                    alert(resultado.error || "Hubo un problema al guardar la solicitud.");
+            item.addEventListener('click', () => {
+                if (material.stock_disponible <= 0) {
+                    alert("Este material está agotado actualmente.");
                     return;
                 }
+                rellenarFilaActual(material);
+                contenedorLista.classList.add('hidden');
+                inputBuscar.value = '';
+            });
 
-                alert("¡Solicitud enviada con éxito al encargado!");
-                window.location.href = "index.html"; // Redirigimos al menú principal del alumno
+            contenedorLista.appendChild(item);
+        });
 
-            } catch (error) {
-                console.error("Error de conexión:", error);
-                alert("No se pudo conectar con el servidor backend.");
+        contenedorLista.classList.remove('hidden');
+    }
+
+    function rellenarFilaActual(material) {
+        const filas = tbodyTabla.querySelectorAll('tr');
+        let filaDestino = filas[filas.length - 1];
+
+        const inputDescUltima = filaDestino.cells[1].querySelector('input');
+        
+        if (inputDescUltima && inputDescUltima.value !== '') {
+            btnAgregarFila.click(); 
+            const nuevasFilas = tbodyTabla.querySelectorAll('tr');
+            filaDestino = nuevasFilas[nuevasFilas.length - 1];
+        }
+
+        const inputDesc = filaDestino.cells[1].querySelector('input');
+        const inputCant = filaDestino.cells[2].querySelector('input');
+        const inputCodigo = filaDestino.cells[3].querySelector('input');
+
+        inputDesc.value = material.descripcion;
+        inputCodigo.value = material.codigo;
+        inputCant.max = material.stock_disponible;
+        inputCant.value = 1;
+    }
+
+    function eliminarFila(boton) {
+        const filas = tbodyTabla.querySelectorAll('tr');
+        if (filas.length <= 1) {
+            alert("La solicitud debe tener al menos un artículo.");
+            return;
+        }
+        
+        boton.closest('tr').remove();
+
+        const filasRestantes = tbodyTabla.querySelectorAll('tr');
+        filasRestantes.forEach((fila, index) => {
+            fila.querySelector('.numero-celda').textContent = index + 1;
+        });
+    }
+
+    
+    async function enviarSolicitudVale(e) {
+        e.preventDefault(); 
+        
+        const infoSesion = localStorage.getItem('usuario');
+        if (!infoSesion) {
+            alert("Sesión expirada. Por favor, vuelve a iniciar sesión.");
+            window.location.href = "login.html";
+            return;
+        }
+        const usuario_id = JSON.parse(infoSesion).matricula;
+
+        const fecha_solicitud = document.getElementById('fechaSolicitud').value;
+        const checkNoDefinido = document.getElementById('checkNoDefinido').checked;
+        const fecha_entrega = checkNoDefinido ? null : document.getElementById('fechaEntrega').value;
+
+        const materialesAEnviar = [];
+        const filas = tbodyTabla.querySelectorAll('tr');
+
+        filas.forEach(fila => {
+            const codigo = fila.cells[3].querySelector('input').value.trim();
+            const cantidad = parseInt(fila.cells[2].querySelector('input').value);
+            const descripcion = fila.cells[1].querySelector('input').value.trim();
+
+            if (codigo && cantidad > 0) {
+                materialesAEnviar.push({ codigo, cantidad, descripcion });
             }
         });
 
-        // --- FUNCIÓN: AGREGAR NUEVA FILA A LA TABLA ---
-        const btnAgregarFila = document.getElementById('btnAgregarFila');
-        const tbodyTabla = document.querySelector('table tbody');
+        if (materialesAEnviar.length === 0) {
+            alert("Debes agregar al menos un material válido usando el buscador.");
+            return;
+        }
 
-        btnAgregarFila.addEventListener('click', () => {
-            // Contamos cuántas filas hay para poner el número correlativo (No.)
-            const numeroFilas = tbodyTabla.querySelectorAll('tr').length + 1;
+        const datosVale = {
+            usuario_id,
+            laboratorio, 
+            fecha_solicitud,
+            fecha_entrega,
+            materiales: materialesAEnviar
+        };
 
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/60 text-sm";
-            
-            nuevaFila.innerHTML = `
-                <td class="p-4 text-center font-medium text-slate-400 numero-celda">${numeroFilas}</td>
-                <td class="p-4">
-                    <input type="text" placeholder="Nombre del artículo" readonly class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-blue-500 outline-none text-slate-300">
-                </td>
-                <td class="p-4">
-                    <input type="number" min="1" value="1" class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 text-center focus:ring-1 focus:ring-blue-500 outline-none">
-                </td>
-                <td class="p-4">
-                    <input type="text" placeholder="UNSIS-CETI-00" readonly class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 font-mono text-xs focus:ring-1 focus:ring-blue-500 outline-none text-slate-400">
-                </td>
-                <td class="p-4 flex items-center gap-2">
-                    <input type="text" placeholder="Ninguna" class="flex-1 bg-slate-900/40 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-blue-500 outline-none">
-                    <button type="button" onclick="eliminarFila(this)" class="text-rose-500 hover:text-rose-400 px-2 py-1 transition-all text-base"><i class="fa-solid fa-trash-can"></i></button>
-                </td>
-            `;
-            
-            tbodyTabla.appendChild(nuevaFila);
-        });
+        try {
+            const respuesta = await fetch('http://localhost:5000/api/prestamos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosVale)
+            });
 
-        // --- FUNCIÓN: ELIMINAR UNA FILA ESPECÍFICA ---
-        function eliminarFila(boton) {
-            const filas = tbodyTabla.querySelectorAll('tr');
-            // No dejamos que elimine la última fila si es la única que queda
-            if (filas.length <= 1) {
-                alert("La solicitud debe tener al menos un artículo.");
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok) {
+                alert(resultado.error || "Hubo un problema al guardar la solicitud.");
                 return;
             }
-            
-            // Eliminamos la fila correspondiente
-            boton.closest('tr').remove();
 
-            // Renumerar los índices (No.) de las filas restantes para que queden en orden (1, 2, 3...)
-            const filasRestantes = tbodyTabla.querySelectorAll('tr');
-            filasRestantes.forEach((fila, index) => {
-                fila.querySelector('.numero-celda').textContent = index + 1;
-            });
+            alert("¡Solicitud enviada con éxito al encargado!");
+            window.location.href = "index.html"; 
+
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            alert("No se pudo conectar con el servidor backend.");
         }
+    }
 
-        // --- MODIFICACIÓN DE TU FUNCIÓN ACTUAL RELLENAR FILA ---
-        // Cambia tu función rellenarFilaActual por esta para que siempre use la fila que esté vacía o la última
-        function rellenarFilaActual(material) {
-            const filas = tbodyTabla.querySelectorAll('tr');
-            let filaDestino = filas[filas.length - 1];
+    document.addEventListener('DOMContentLoaded', obtenerMaterialesBackend);
 
-            // Buscamos si la última fila ya tiene datos; si sí, creamos una nueva automáticamente
-            const inputDescUltima = filaDestino.cells[1].querySelector('input');
-            if (inputDescUltima && inputDescUltima.value !== '') {
-                btnAgregarFila.click(); // Forzamos el click para crear una nueva fila limpia
-                const nuevasFilas = tbodyTabla.querySelectorAll('tr');
-                filaDestino = nuevasFilas[nuevasFilas.length - 1];
-            }
+    inputBuscar.addEventListener('input', mostrarSugerencias);
 
-            const inputDesc = filaDestino.cells[1].querySelector('input');
-            const inputCant = filaDestino.cells[2].querySelector('input');
-            const inputCodigo = filaDestino.cells[3].querySelector('input');
-
-            inputDesc.value = material.descripcion;
-            inputCodigo.value = material.codigo;
-            inputCant.max = material.stock_disponible;
-            inputCant.value = 1;
+    document.addEventListener('click', (e) => {
+        if (!inputBuscar.contains(e.target) && !contenedorLista.contains(e.target)) {
+            contenedorLista.classList.add('hidden');
         }
-    </script>
+    });
+
+    formSolicitud.addEventListener('submit', enviarSolicitudVale);
+
+    btnAgregarFila.addEventListener('click', () => {
+        const numeroFilas = tbodyTabla.querySelectorAll('tr').length + 1;
+
+        const nuevaFila = document.createElement('tr');
+        nuevaFila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/60 text-sm";
+        
+        nuevaFila.innerHTML = `
+            <td class="p-4 text-center font-medium text-slate-400 numero-celda">${numeroFilas}</td>
+            <td class="p-4">
+                <input type="text" placeholder="Nombre del artículo" readonly class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-blue-500 outline-none text-slate-300">
+            </td>
+            <td class="p-4">
+                <input type="number" min="1" value="1" class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 text-center focus:ring-1 focus:ring-blue-500 outline-none">
+            </td>
+            <td class="p-4">
+                <input type="text" placeholder="UNSIS-CETI-00" readonly class="w-full bg-slate-900/40 border border-slate-700 rounded-lg p-2 font-mono text-xs focus:ring-1 focus:ring-blue-500 outline-none text-slate-400">
+            </td>
+            <td class="p-4 flex items-center gap-2">
+                <input type="text" placeholder="Ninguna" class="flex-1 bg-slate-900/40 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                <button type="button" onclick="eliminarFila(this)" class="text-rose-500 hover:text-rose-400 px-2 py-1 transition-all text-base"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        `;
+        
+        tbodyTabla.appendChild(nuevaFila);
+    });
+</script>
 </body>
 </html>

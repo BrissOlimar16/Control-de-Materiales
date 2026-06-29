@@ -24,7 +24,6 @@
                 <a href="#solicitudes" class="flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-blue-600/10">
                     <i class="fa-solid fa-clock-rotate-left w-5"></i> Solicitudes Pendientes
                 </a>
-
                 <a href="#inventario" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all">
                     <i class="fa-solid fa-boxes-stacked w-5"></i> Stock / Inventario
                 </a>
@@ -39,6 +38,7 @@
     </div>
 
     <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+        
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-800/40 border border-slate-700/50 p-6 rounded-2xl">
             <div>
                 <h1 class="text-2xl font-extrabold text-white">Panel de Control General</h1>
@@ -67,22 +67,10 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-700/40">
-                        <tr class="hover:bg-slate-800/30 transition-all">
-                            <td class="p-4 font-semibold text-white">Brisa </td>
-                            <td class="p-4 text-blue-400">CETI</td>
-                            <td class="p-4 text-slate-300">1x Multímetro Digital Steren</td>
-                            <td class="p-4 text-slate-400">2026-06-28</td>
-                            <td class="p-4 flex justify-center gap-2">
-                                <button class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all">Aprobar</button>
-                                <button class="bg-rose-600/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-all">Rechazar</button>
-                            </td>
-                        </tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </section>
-
-        
 
         <section id="inventario" class="space-y-4 pt-4 de-seccion hidden">
             <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-box-open text-blue-500 mr-2"></i>Monitoreo de Stock Actual</h2>
@@ -104,35 +92,38 @@
             </div>
         </section>
 
-        <section id="historial" class="space-y-4 pt-4 de-seccion hidden">
-            <div id="devoluciones" class="mt-8 bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
-            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-hand-holding-hand text-amber-500"></i> Materiales en Préstamo 
-            </h2>
-            <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/20">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
-                            <th class="p-4">Alumno</th>
-                            <th class="p-4">Laboratorio</th>
-                            <th class="p-4">Material Prestado</th>
-                            <th class="p-4">Fecha Préstamo</th>
-                            <th class="p-4 text-center">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60 text-sm">
-                        </tbody>
-                </table>
-            </div>
-            <div id="vales-concluidos" class="mt-8 bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+        <section id="historial" class="space-y-8 pt-4 de-seccion hidden">
+            
+            <div id="devoluciones" class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
                 <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-blue-500"></i> Historial de prestamos
+                    <i class="fa-solid fa-hand-holding-hand text-amber-500"></i> Materiales en Préstamo (Activos)
                 </h2>
                 <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/20">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
-                                <th class="p-4">ID Prestamo</th>
+                                <th class="p-4">Alumno</th>
+                                <th class="p-4">Laboratorio</th>
+                                <th class="p-4">Material Prestado</th>
+                                <th class="p-4">Fecha Préstamo</th>
+                                <th class="p-4 text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/60 text-sm">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="vales-concluidos" class="bg-slate-800/40 border border-slate-700/60 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-500"></i> Historial de Vales Concluidos
+                </h2>
+                <div class="overflow-x-auto border border-slate-700 rounded-xl bg-slate-900/20">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800/80 border-b border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                                <th class="p-4">ID Préstamo</th>
                                 <th class="p-4">ALUMNO</th>
                                 <th class="p-4">LABORATORIO</th>
                                 <th class="p-4">MATERIAL / CANTIDAD</th>
@@ -140,15 +131,11 @@
                                 <th class="p-4">FECHA DEVOLUCIÓN</th>
                             </tr>
                         </thead>
-                        <!-- Le asignamos este ID al tbody y quitamos el registro estático de Juan Pérez -->
                         <tbody id="tbodyConcluidos" class="divide-y divide-slate-700/60 text-sm">
-                            <!-- Aquí se inyectarán las devoluciones reales -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
-            
-        </div>
         </section>
     </main>
 
@@ -198,14 +185,14 @@
 
     <script>
         const modal = document.getElementById('modalMaterial');
-        const btnNuevo = document.getElementById('btnNuevoMaterial') || document.querySelector('main button'); // Respaldo por si acaso
+        const btnNuevo = document.getElementById('btnNuevoMaterial'); 
         const btnCerrar = document.getElementById('btnCerrarModal');
         const btnCancelar = document.getElementById('btnCancelar');
         const formMaterial = document.getElementById('formMaterial');
+        const enlacesSidebar = document.querySelectorAll('nav a');
+        const secciones = document.querySelectorAll('.de-seccion');
 
-        // --- FUNCIONES DEL MODAL ---
         btnNuevo.addEventListener('click', () => modal.classList.remove('hidden'));
-        
         const cerrarModal = () => {
             modal.classList.add('hidden');
             formMaterial.reset();
@@ -213,36 +200,47 @@
         btnCerrar.addEventListener('click', cerrarModal);
         btnCancelar.addEventListener('click', cerrarModal);
 
+        enlacesSidebar.forEach(enlace => {
+            enlace.addEventListener('click', function(e) {
+                e.preventDefault(); 
+
+                enlacesSidebar.forEach(btn => {
+                    btn.className = "flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all";
+                });
+
+                this.className = "flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-blue-600/10";
+                secciones.forEach(sec => sec.classList.add('hidden'));
+
+                const targetId = this.getAttribute('href').substring(1);
+                const seccionDestino = document.getElementById(targetId);
+                if (seccionDestino) {
+                    seccionDestino.classList.remove('hidden');
+                }
+            });
+        });
+
         async function cargarInventario() {
             try {
                 const respuesta = await fetch('http://localhost:5000/api/materiales');
                 const materiales = await respuesta.json();
-
-                // Buscamos el tbody que está dentro de la sección #inventario
                 const tbody = document.querySelector('#inventario table tbody');
                 tbody.innerHTML = ''; 
 
                 if (materiales.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-500">No hay materiales registrados en phpMyAdmin.</td>
-                        </tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">No hay materiales registrados en el inventario.</td></tr>`;
                     return;
                 }
 
                 materiales.forEach(material => {
                     const fila = document.createElement('tr');
                     fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
-                    
                     fila.innerHTML = `
                         <td class="p-4 font-mono text-xs text-slate-400">${material.codigo}</td>
                         <td class="p-4 text-slate-200 font-medium">${material.descripcion}</td>
                         <td class="p-4 text-slate-400">${material.categoria}</td>
                         <td class="p-4 text-center text-slate-300">${material.stock_total}</td>
                         <td class="p-4 text-center">
-                            <span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold text-xs">
-                                ${material.stock_disponible}
-                            </span>
+                            <span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold text-xs">${material.stock_disponible}</span>
                         </td>
                         <td class="p-4 text-center">
                             <button class="text-blue-400 hover:text-blue-300 mr-2" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -251,9 +249,105 @@
                     `;
                     tbody.appendChild(fila);
                 });
-
             } catch (error) {
                 console.error("Error al cargar el inventario:", error);
+            }
+        }
+
+        async function cargarSolicitudesPendientes() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/pendientes');
+                const solicitudes = await respuesta.json();
+                const tbody = document.querySelector('#solicitudes table tbody');
+                tbody.innerHTML = ''; 
+
+                if (solicitudes.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">No hay solicitudes de vales por autorizar.</td></tr>`;
+                    return;
+                }
+
+                solicitudes.forEach(sol => {
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
+                    fila.innerHTML = `
+                        <td class="p-4 font-semibold text-white">${sol.solicitante} <span class="text-xs text-slate-500 font-mono block">${sol.usuario_id}</span></td>
+                        <td class="p-4 text-blue-400 font-medium">${sol.laboratorio}</td>
+                        <td class="p-4 text-slate-300">${sol.cantidad}x — ${sol.codigo_material}</td>
+                        <td class="p-4 text-slate-400">${sol.fecha_solicitud.split('T')[0]}</td>
+                        <td class="p-4 flex justify-center gap-2">
+                            <button onclick="procesarSolicitud(${sol.id}, 'aprobar')" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all">Aprobar</button>
+                            <button onclick="procesarSolicitud(${sol.id}, 'rechazar')" class="bg-rose-600/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-all">Rechazar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error("Error al cargar las solicitudes pendientes:", error);
+            }
+        }
+
+        async function cargarPrestamosActivos() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/activos');
+                const activos = await respuesta.json();
+                const tbody = document.querySelector('#devoluciones table tbody');
+                tbody.innerHTML = '';
+
+                if (activos.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">No hay materiales actualmente en manos de ningún alumno.</td></tr>`;
+                    return;
+                }
+
+                activos.forEach(act => {
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
+                    fila.innerHTML = `
+                        <td class="p-4 font-semibold text-white">${act.solicitante} <span class="text-xs text-slate-500 font-mono block">${act.usuario_id}</span></td>
+                        <td class="p-4 text-blue-400 font-medium">${act.laboratorio}</td>
+                        <td class="p-4 text-slate-300">${act.cantidad}x — ${act.descripcion}</td>
+                        <td class="p-4 text-slate-400">${act.fecha_solicitud.split('T')[0]}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="registrarDevolucion(${act.id})" class="bg-amber-600/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 hover:text-slate-900 transition-all">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Recibir Devolución
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error("Error al cargar préstamos activos:", error);
+            }
+        }
+
+        async function cargarValesConcluidos() {
+            try {
+                const respuesta = await fetch('http://localhost:5000/api/prestamos/concluidos');
+                const concluidos = await respuesta.json();
+                const tbody = document.getElementById('tbodyConcluidos');
+                tbody.innerHTML = '';
+
+                if (concluidos.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">No hay registros de vales concluidos aún.</td></tr>`;
+                    return;
+                }
+
+                concluidos.forEach(val => {
+                    const fila = document.createElement('tr');
+                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40 text-slate-300";
+                    fila.innerHTML = `
+                        <td class="p-4 font-mono text-xs text-slate-500">#V-${val.id}</td>
+                        <td class="p-4 font-semibold text-white">${val.solicitante}</td>
+                        <td class="p-4 text-blue-400 font-medium">${val.laboratorio}</td>
+                        <td class="p-4 text-slate-400">${val.cantidad}x — ${val.descripcion}</td>
+                        <td class="p-4">
+                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-bold">Devuelto</span>
+                        </td>
+                        <td class="p-4 text-slate-400">${val.fecha_devolucion_real.split('T')[0]}</td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error("Error al cargar vales concluidos:", error);
             }
         }
 
@@ -276,86 +370,19 @@
                 const resultado = await respuesta.json();
 
                 if (!respuesta.ok) {
-                    alert(resultado.error || "Hubo un problema al guardar.");
+                    alert(resultado.error || "Hubo un problema al guardar el material.");
                     return;
                 }
 
                 alert("¡Material añadido exitosamente!");
                 cerrarModal();
-                cargarInventario(); // Recargamos la lista automáticamente sin refrescar la página
-
+                cargarInventario();
             } catch (error) {
-                console.error("Error al conectar:", error);
+                console.error("Error al conectar con la API:", error);
                 alert("Error de conexión con el backend.");
             }
         });
 
-        const enlacesSidebar = document.querySelectorAll('nav a');
-        const secciones = document.querySelectorAll('.de-seccion');
-
-        enlacesSidebar.forEach(enlace => {
-            enlace.addEventListener('click', function(e) {
-                e.preventDefault(); // Evita que la URL cambie bruscamente con el #hash
-
-                // 1. Quitamos los estilos activos (fondo azul) de todos los botones de la barra lateral
-                enlacesSidebar.forEach(btn => {
-                    btn.className = "flex items-center gap-3 text-slate-400 hover:text-white hover:bg-slate-700/30 px-4 py-3 rounded-xl font-medium text-sm transition-all";
-                });
-
-                // 2. Le ponemos el estilo activo (azul fuerte) solo al botón que presionamos
-                this.className = "flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-blue-600/10";
-
-                // 3. Ocultamos todas las secciones agregándoles la clase 'hidden'
-                secciones.forEach(sec => sec.classList.add('hidden'));
-
-                // 4. Obtenemos el ID de la sección correspondiente (ej. #inventario) y le quitamos el 'hidden'
-                const targetId = this.getAttribute('href').substring(1);
-                const seccionDestino = document.getElementById(targetId);
-                if (seccionDestino) {
-                    seccionDestino.classList.remove('hidden');
-                }
-            });
-        });
-
-        // --- FUNCIÓN: CARGAR SOLICITUDES PENDIENTES DESDE LA BASE DE DATOS ---
-        async function cargarSolicitudesPendientes() {
-            try {
-                const respuesta = await fetch('http://localhost:5000/api/prestamos/pendientes');
-                const solicitudes = await respuesta.json();
-
-                const tbody = document.querySelector('#solicitudes table tbody');
-                tbody.innerHTML = ''; // Limpiamos la fila estática anterior
-
-                if (solicitudes.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" class="p-4 text-center text-slate-500">No hay solicitudes de vales por autorizar.</td>
-                        </tr>`;
-                    return;
-                }
-
-                solicitudes.forEach(sol => {
-                    const fila = document.createElement('tr');
-                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
-                    
-                    fila.innerHTML = `
-                        <td class="p-4 font-semibold text-white">${sol.solicitante} <span class="text-xs text-slate-500 font-mono block">${sol.usuario_id}</span></td>
-                        <td class="p-4 text-blue-400 font-medium">${sol.laboratorio}</td>
-                        <td class="p-4 text-slate-300">${sol.cantidad}x — ${sol.codigo_material}</td>
-                        <td class="p-4 text-slate-400">${sol.fecha_solicitud.split('T')[0]}</td>
-                        <td class="p-4 flex justify-center gap-2">
-                            <button onclick="procesarSolicitud(${sol.id}, 'aprobar')" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all">Aprobar</button>
-                            <button onclick="procesarSolicitud(${sol.id}, 'rechazar')" class="bg-rose-600/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-all">Rechazar</button>
-                        </td>
-                    `;
-                    tbody.appendChild(fila);
-                });
-            } catch (error) {
-                console.error("Error al cargar las solicitudes pendientes:", error);
-            }
-        }
-
-        // --- FUNCIÓN: PROCESAR APROBACIÓN O RECHAZO ---
         async function procesarSolicitud(id_prestamo, accion) {
             const confirmar = confirm(`¿Estás seguro de que deseas ${accion} esta solicitud?`);
             if (!confirmar) return;
@@ -375,57 +402,15 @@
                 }
 
                 alert(resultado.mensaje);
-                
-                // Recargamos ambas tablas para mantener sincronizado el sistema
                 cargarSolicitudesPendientes();
+                cargarPrestamosActivos(); 
                 cargarInventario(); 
-
             } catch (error) {
                 console.error("Error al conectar con la API:", error);
                 alert("Error de comunicación con el servidor.");
             }
         }
 
-        // --- FUNCIÓN: CARGAR PRÉSTAMOS ACTIVOS DESDE EL BACKEND ---
-        async function cargarPrestamosActivos() {
-            try {
-                const respuesta = await fetch('http://localhost:5000/api/prestamos/activos');
-                const activos = await respuesta.json();
-
-                const tbody = document.querySelector('#devoluciones table tbody');
-                tbody.innerHTML = '';
-
-                if (activos.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" class="p-4 text-center text-slate-500">No hay materiales actualmente en manos de ningún alumno.</td>
-                        </tr>`;
-                    return;
-                }
-
-                activos.forEach(act => {
-                    const fila = document.createElement('tr');
-                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40";
-                    
-                    fila.innerHTML = `
-                        <td class="p-4 font-semibold text-white">${act.solicitante} <span class="text-xs text-slate-500 font-mono block">${act.usuario_id}</span></td>
-                        <td class="p-4 text-blue-400 font-medium">${act.laboratorio}</td>
-                        <td class="p-4 text-slate-300">${act.cantidad}x — ${act.descripcion}</td>
-                        <td class="p-4 text-slate-400">${act.fecha_solicitud.split('T')[0]}</td>
-                        <td class="p-4 text-center">
-                            <button onclick="registrarDevolucion(${act.id})" class="bg-amber-600/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 hover:text-slate-900 transition-all">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Recibir Devolución
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(fila);
-                });
-            } catch (error) {
-                console.error("Error al cargar préstamos activos:", error);
-            }
-        }
-
-        // --- FUNCIÓN: MANDAR LA PETICIÓN DE DEVOLUCIÓN ---
         async function registrarDevolucion(id_prestamo) {
             const confirmar = confirm("¿Confirmas que el alumno ha devuelto el material en buen estado?");
             if (!confirmar) return;
@@ -445,60 +430,15 @@
                 }
 
                 alert(resultado.mensaje);
-                
-                // Refrescamos absolutamente todo el panel para ver el stock reajustado al instante
                 cargarSolicitudesPendientes();
                 cargarPrestamosActivos();
                 cargarInventario();
                 cargarValesConcluidos();
-
             } catch (error) {
                 console.error("Error al conectar con la API:", error);
-                alert("Error de comunicación con el servidor.");
+                alert("Error de conexión con el servidor.");
             }
         }
-
-        // --- FUNCIÓN: CARGAR VALES CONCLUIDOS (DEVUELTOS) ---
-        async function cargarValesConcluidos() {
-            try {
-                const respuesta = await fetch('http://localhost:5000/api/prestamos/concluidos');
-                const concluidos = await respuesta.json();
-
-                const tbody = document.getElementById('tbodyConcluidos');
-                tbody.innerHTML = '';
-
-                if (concluidos.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-500">No hay registros de vales concluidos aún.</td>
-                        </tr>`;
-                    return;
-                }
-
-                concluidos.forEach(val => {
-                    const fila = document.createElement('tr');
-                    fila.className = "hover:bg-slate-800/30 transition-all border-b border-slate-700/40 text-slate-300";
-                    
-                    fila.innerHTML = `
-                        <td class="p-4 font-mono text-xs text-slate-500">#V-${val.id}</td>
-                        <td class="p-4 font-semibold text-white">${val.solicitante}</td>
-                        <td class="p-4 text-blue-400 font-medium">${val.laboratorio}</td>
-                        <td class="p-4 text-slate-400">${val.cantidad}x — ${val.descripcion}</td>
-                        <td class="p-4">
-                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-bold">
-                                Devuelto
-                            </span>
-                        </td>
-                        <td class="p-4 text-slate-400">${val.fecha_devolucion_real.split('T')[0]}</td>
-                    `;
-                    tbody.appendChild(fila);
-                });
-            } catch (error) {
-                console.error("Error al cargar vales concluidos:", error);
-            }
-        }
-
-        // Modificamos el listener de carga inicial para que llame a ambas funciones
         document.addEventListener('DOMContentLoaded', () => {
             cargarSolicitudesPendientes();
             cargarPrestamosActivos();

@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Ctrl + Mat</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -15,12 +13,10 @@
 </head>
 <body class="bg-slate-900 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
     
-    <!-- Efectos de iluminación de fondo -->
     <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[130px] pointer-events-none"></div>
 
     <div class="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 w-full max-w-md rounded-2xl p-8 shadow-2xl relative z-10">
         
-        <!-- Logotipo e Identidad -->
         <div class="flex flex-col items-center mb-8 text-center">
             <div class="w-16 h-16 bg-slate-700/40 rounded-full flex items-center justify-center mb-3 border border-slate-600/50 p-2">
                 <img src="imagenes/escudo-unsis.png" alt="UNSIS" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML=`<i class='fa-solid fa-graduation-cap text-3xl text-amber-500'></i>`">
@@ -66,8 +62,6 @@
                 Ingresar al Sistema
             </button>
         </form>
-
-        <!-- Pie del contenedor -->
         <div class="mt-6 text-center border-t border-slate-700/40 pt-4">
             <p class="text-xs text-slate-500">¿No tienes cuenta? <a href="#" class="text-blue-400 font-medium hover:underline">Solicita acceso al encargado</a></p>
         </div>
@@ -75,13 +69,12 @@
 
     <script>
         document.getElementById('formLogin').addEventListener('submit', async function(e) {
-            e.preventDefault(); // Evita que la página se recargue
+            e.preventDefault();
 
             const usuario = document.getElementById('usuario').value.trim();
             const password = document.getElementById('password').value;
 
             try {
-                // Hacemos la petición POST real a tu servidor de Node.js (puerto 5000)
                 const respuesta = await fetch('http://localhost:5000/api/login', {
                     method: 'POST',
                     headers: {
@@ -93,17 +86,14 @@
                 const resultado = await respuesta.json();
 
                 if (!respuesta.ok) {
-                    // Si el servidor responde con error (401 o 500), mostramos el mensaje de la BD
                     alert(resultado.error || "Error al iniciar sesión");
                     return;
                 }
 
-                // Si el login es exitoso, guardamos los datos del usuario en la sesión del navegador
                 localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
                 
                 alert(`¡Bienvenido(a) ${resultado.usuario.nombre}!`);
 
-                // Redirección automática real según el ROL de la Base de Datos
                 if (resultado.usuario.rol === 'administrador' || resultado.usuario.rol === 'laboratorista') {
                     window.location.href = "administrador.html";
                 } else if (resultado.usuario.rol === 'alumno') {
